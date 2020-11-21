@@ -17,6 +17,7 @@ class TodoListViewController: UITableViewController {
         
     }
     
+    //MARK: - TableView DataSource
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
@@ -29,6 +30,38 @@ class TodoListViewController: UITableViewController {
         
         return cell
     }
+    
+    //MARK: - TableView Delegates methods
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(itemArray[indexPath.row])
+        
+        
+        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        } else {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+
+    
+    //MARK: - Add new items
+    
+    
+//    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+//
+//        let alert = UIAlertController(title: "Add New Todo", message: "", preferredStyle: .alert)
+//
+//        let action = UIAlertAction(title: "Add item", style: .default) { (action) in
+//            //what will happen when user clicks add item in alert
+//
+//            alert.addAction(<#T##action: UIAlertAction##UIAlertAction#>)
+//        }
+//
+//    }
     
 }
 
