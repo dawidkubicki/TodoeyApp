@@ -10,7 +10,7 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
-    let itemArray = ["Find Mike", "Buy Eggs", "Some other Dragon"]
+    var itemArray = ["Find Mike", "Buy Eggs", "Some other Dragon"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,9 +34,7 @@ class TodoListViewController: UITableViewController {
     //MARK: - TableView Delegates methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(itemArray[indexPath.row])
-        
-        
+        //print(itemArray[indexPath.row])
         if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
             tableView.cellForRow(at: indexPath)?.accessoryType = .none
         } else {
@@ -51,17 +49,26 @@ class TodoListViewController: UITableViewController {
     //MARK: - Add new items
     
     
-//    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-//
-//        let alert = UIAlertController(title: "Add New Todo", message: "", preferredStyle: .alert)
-//
-//        let action = UIAlertAction(title: "Add item", style: .default) { (action) in
-//            //what will happen when user clicks add item in alert
-//
-//            alert.addAction(<#T##action: UIAlertAction##UIAlertAction#>)
-//        }
-//
-//    }
+    @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
+        
+        var textField = UITextField()
+
+        let alert = UIAlertController(title: "Add New Todo", message: "", preferredStyle: .alert)
+
+        let action = UIAlertAction(title: "Add item", style: .default) { (action) in
+            //what will happen when user clicks add item in alert
+            self.itemArray.append(textField.text!)
+            self.tableView.reloadData()
+        }
+        
+        alert.addTextField { (alertTextField) in
+            alertTextField.placeholder = "Create new item"
+            textField = alertTextField
+        }
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+
+    }
     
 }
 
