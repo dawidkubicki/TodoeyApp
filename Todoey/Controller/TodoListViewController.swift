@@ -23,20 +23,20 @@ class TodoListViewController: UITableViewController {
 //        let newItem1 = Item()
 //        newItem1.title = "Find Gibson"
 //        itemArray.append(newItem1)
-//        
+//
 //        let newItem2 = Item()
 //        newItem2.title = "Find Gibson"
 //        itemArray.append(newItem2)
-//        
+//
 //        let newItem3 = Item()
 //        newItem3.title = "Find Gibson"
 //        itemArray.append(newItem3)
-//        
+//
 //        let newItem4 = Item()
 //        newItem4.title = "Find Gibson"
 //        itemArray.append(newItem4)
         
-//        loadItems()
+        loadItems()
         
     }
     
@@ -64,7 +64,12 @@ class TodoListViewController: UITableViewController {
         //print(itemArray[indexPath.row])
         
         //how to get the opposite (works like a toggle with the boolean)
-        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+//        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+  
+        //how to delete
+//        context.delete(itemArray[indexPath.row])
+//        itemArray.remove(at: indexPath.row)
+        
         
         saveItems()
         
@@ -121,16 +126,14 @@ class TodoListViewController: UITableViewController {
     }
     
     
-//    func loadItems(){
-//        if let data = try? Data(contentsOf: dataFilePath!) {
-//            let decoder = PropertyListDecoder()
-//            do {
-//                itemArray = try decoder.decode([ItemModel].self, from: data)
-//            } catch {
-//                print("Error while decoding: \(error)")
-//            }
-//        }
-//    }
+    func loadItems(){
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error while fetching: \(error)")
+        }
+    }
 }
 
 
