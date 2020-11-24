@@ -7,34 +7,36 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
 
-    var itemArray = [ItemModel]()
+    var itemArray = [Item]()
     
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let newItem1 = ItemModel()
-        newItem1.title = "Find Gibson"
-        itemArray.append(newItem1)
+//        let newItem1 = Item()
+//        newItem1.title = "Find Gibson"
+//        itemArray.append(newItem1)
+//        
+//        let newItem2 = Item()
+//        newItem2.title = "Find Gibson"
+//        itemArray.append(newItem2)
+//        
+//        let newItem3 = Item()
+//        newItem3.title = "Find Gibson"
+//        itemArray.append(newItem3)
+//        
+//        let newItem4 = Item()
+//        newItem4.title = "Find Gibson"
+//        itemArray.append(newItem4)
         
-        let newItem2 = ItemModel()
-        newItem2.title = "Find Gibson"
-        itemArray.append(newItem2)
-        
-        let newItem3 = ItemModel()
-        newItem3.title = "Find Gibson"
-        itemArray.append(newItem3)
-        
-        let newItem4 = ItemModel()
-        newItem4.title = "Find Gibson"
-        itemArray.append(newItem4)
-        
-        loadItems()
+//        loadItems()
         
     }
     
@@ -85,8 +87,10 @@ class TodoListViewController: UITableViewController {
             //what will happen when user clicks add item in alert
             //self.itemArray.append(textField.text!)
             
-            let newItem = ItemModel()
+            let newItem = Item(context: self.context)
+            
             newItem.title = textField.text!
+            newItem.done = !false
             
             self.itemArray.append(newItem)
          
@@ -106,13 +110,10 @@ class TodoListViewController: UITableViewController {
     //MARK: - Save to plist func
     
     func saveItems(){
-        let encoder = PropertyListEncoder()
-        
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try context.save()
         } catch {
-            print("error encoding item array, \(error)")
+            print("error saving context, \(error)")
         }
 
         
@@ -120,16 +121,16 @@ class TodoListViewController: UITableViewController {
     }
     
     
-    func loadItems(){
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            do {
-                itemArray = try decoder.decode([ItemModel].self, from: data)
-            } catch {
-                print("Error while decoding: \(error)")
-            }
-        }
-    }
+//    func loadItems(){
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//            let decoder = PropertyListDecoder()
+//            do {
+//                itemArray = try decoder.decode([ItemModel].self, from: data)
+//            } catch {
+//                print("Error while decoding: \(error)")
+//            }
+//        }
+//    }
 }
 
 
