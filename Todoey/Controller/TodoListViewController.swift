@@ -16,25 +16,13 @@ class TodoListViewController: UITableViewController {
     //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let newItem1 = Item()
-//        newItem1.title = "Find Gibson"
-//        itemArray.append(newItem1)
-//
-//        let newItem2 = Item()
-//        newItem2.title = "Find Gibson"
-//        itemArray.append(newItem2)
-//
-//        let newItem3 = Item()
-//        newItem3.title = "Find Gibson"
-//        itemArray.append(newItem3)
-//
-//        let newItem4 = Item()
-//        newItem4.title = "Find Gibson"
-//        itemArray.append(newItem4)
+        //let request : NSFetchRequest<Item> = Item.fetchRequest()
+    
+        searchBar.delegate = self
         
         loadItems()
         
@@ -112,6 +100,13 @@ class TodoListViewController: UITableViewController {
 
     }
     
+    
+    //MARK: - IBOutlet SearchBar
+    
+    @IBOutlet weak var searchBar: UISearchBar!
+    
+    
+    
     //MARK: - Save to plist func
     
     func saveItems(){
@@ -126,14 +121,45 @@ class TodoListViewController: UITableViewController {
     }
     
     
-    func loadItems(){
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()){
+        
         do {
             itemArray = try context.fetch(request)
         } catch {
             print("Error while fetching: \(error)")
         }
+        
+        tableView.reloadData()
     }
 }
 
 
+
+//MARK: - Search bar methods
+
+extension TodoListViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+    
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+         
+        loadItems(with: request)
+       
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text!.count == 0 {
+            loadItems()
+            
+            //hide keyboard (without tapping foreground around)
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+            
+        }
+    }
+    
+}
