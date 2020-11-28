@@ -8,9 +8,12 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 class CategoryViewController: UITableViewController {
 
+    let realm = try! Realm()
+    
     var categoryArray = [Category]()
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -22,6 +25,7 @@ class CategoryViewController: UITableViewController {
         
     }
 
+    //MARK: - Add Button Pressed (To add new category)
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
@@ -31,13 +35,13 @@ class CategoryViewController: UITableViewController {
 
         let action = UIAlertAction(title: "Add category", style: .default) { (action) in
 
-            let newCategory = Category(context: self.context)
+            let newCategory = Category()
 
             newCategory.name = textField.text!
 
             self.categoryArray.append(newCategory)
             
-            self.saveCategories()
+            self.save(category: newCategory)
         }
         
         alert.addTextField { (alertTextField) in
@@ -49,9 +53,14 @@ class CategoryViewController: UITableViewController {
         
     }
     
-    func saveCategories(){
+    
+    //MARK: - Save and load categories
+    
+    func save(category: Category){
         do {
-            try context.save()
+            try realm.write {
+                realm.add(category)
+            }
         } catch {
             print("error saving context, \(error)")
         }
@@ -60,16 +69,18 @@ class CategoryViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()){
-        
-        do {
-            categoryArray = try context.fetch(request)
-        } catch {
-            print("Error while fetching: \(error)")
-        }
-        
-        tableView.reloadData()
+    func loadCategories(){
+//
+//        request: NSFetchRequest<Category> = Category.fetchRequest()
+//        do {
+//            categoryArray = try context.fetch(request)
+//        } catch {
+//            print("Error while fetching: \(error)")
+//        }
+//
+//        tableView.reloadData()
     }
+    
     
     //MARK: - TableView DataSource Methods
     
@@ -103,5 +114,4 @@ class CategoryViewController: UITableViewController {
         }
     }
     
-    //MARK: - Data Manipulation Methods
 }
